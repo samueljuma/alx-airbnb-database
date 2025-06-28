@@ -58,7 +58,8 @@ createdb airbnb_backend
 psql -d airbnb_backend -f schema.sql
 \dt        -- list all tables
 \d users   -- describe the users table
-\dT List all enums
+\dT --  List all enums
+psql -d airbnb_backend -f seed.sql -- Add data 
 
 ```
 
