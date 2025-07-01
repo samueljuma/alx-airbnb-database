@@ -1,6 +1,6 @@
 # 🔗 Understanding SQL Joins – Airbnb Clone
 
-This document explains the purpose and usage of different SQL JOIN types used in the backend of the Airbnb Clone project. JOINs are essential in relational databases for combining data from multiple tables.
+This section explains the purpose and usage of different SQL JOIN types used in the backend of the Airbnb Clone project. JOINs are essential in relational databases for combining data from multiple tables.
 
 ---
 
@@ -106,7 +106,72 @@ FULL OUTER JOIN
 
 ---
 
-## 🗂️ Conclusion
 
-Using JOINs strategically allows us to build powerful, efficient queries that tie together related information. Mastering them is key to backend development in any relational database system.
+# 📦 SQL Subqueries
+
+This section explains and includes subqueries used to retrieve advanced insights from the Airbnb Clone database using both non-correlated and correlated subqueries.
+
+---
+
+## 🔍 1. Non-Correlated Subquery – Properties with Average Rating > 4.0
+
+### ✅ Query
+
+```sql
+SELECT
+    property_id,
+    name,
+    location
+FROM
+    properties
+WHERE
+    property_id IN (
+        SELECT
+            property_id
+        FROM
+            reviews
+        GROUP BY
+            property_id
+        HAVING
+            AVG(rating) > 4.0
+    );
+```
+
+### 💡 Logic
+
+* This is a **non-correlated subquery**, meaning it runs independently of the outer query.
+* The inner subquery returns all `property_id`s that have an average rating greater than 4.0.
+* The outer query then selects full property details for those IDs.
+
+---
+
+## 🔄 2. Correlated Subquery – Users with More Than 3 Bookings
+
+### ✅ Query
+
+```sql
+SELECT
+    user_id,
+    first_name,
+    last_name,
+    email
+FROM
+    users u
+WHERE
+    (
+        SELECT COUNT(*)
+        FROM bookings b
+        WHERE b.user_id = u.user_id
+    ) > 3;
+```
+
+### 💡 Logic
+
+* This is a **correlated subquery**, meaning it depends on each row of the outer query.
+* For each user, the subquery counts how many bookings they have.
+* Only users with **more than 3 bookings** are returned by the outer query.
+
+---
+
+
 
