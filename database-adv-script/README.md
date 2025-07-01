@@ -219,19 +219,27 @@ We use `RANK()` as a window function to assign a ranking to each property based 
 ### 🧩 SQL Summary
 
 ```sql
-SELECT
-    p.property_id,
-    p.name,
-    COUNT(b.booking_id) AS total_bookings,
-    RANK() OVER (ORDER BY COUNT(b.booking_id) DESC) AS booking_rank
-FROM
-    properties p
-LEFT JOIN
-    bookings b ON p.property_id = b.property_id
-GROUP BY
-    p.property_id, p.name
-ORDER BY
-    booking_rank;
+SELECT 
+    property_id,
+    name,
+    total_bookings,
+    ROW_NUMBER() OVER (ORDER BY total_bookings DESC) AS row_num,
+    RANK() OVER (ORDER BY total_bookings DESC) AS booking_rank
+FROM (
+    SELECT 
+        p.property_id,
+        p.name,
+        COUNT(b.booking_id) AS total_bookings
+    FROM 
+        properties p
+    LEFT JOIN 
+        bookings b ON p.property_id = b.property_id
+    GROUP BY 
+        p.property_id, p.name
+) AS ranked_properties
+ORDER BY 
+    row_num;
+
 ```
 
 ### 💡 Insight
@@ -245,6 +253,9 @@ ORDER BY
 
 * Aggregation functions like `COUNT()` give us grouped insights over records.
 * Window functions like `RANK()` help compare rows within a result set without collapsing them.
+* `ROW_NUMBER()` ensures a strict order (no ties).
+
+* `RANK()` handles ties appropriately (e.g., two properties with the same booking count get the same rank, and the next rank is skipped).
 
 These SQL techniques are essential for reporting, recommendations, and ranking features in scalable backend systems like Airbnb.
 
