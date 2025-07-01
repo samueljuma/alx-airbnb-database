@@ -173,5 +173,80 @@ WHERE
 
 ---
 
+# 📊 Aggregations and Window Functions – Airbnb Clone
+
+This section explains the use of SQL aggregation and window functions to analyze data within the Airbnb Clone backend project.
+
+---
+
+## 🔢 1. Aggregation – Total Number of Bookings by Each User
+
+### ✅ Query Logic
+
+We use the `COUNT()` aggregation function to determine how many bookings each user has made.
+
+### 🧩 SQL Summary
+
+```sql
+SELECT
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    COUNT(b.booking_id) AS total_bookings
+FROM
+    users u
+LEFT JOIN
+    bookings b ON u.user_id = b.user_id
+GROUP BY
+    u.user_id, u.first_name, u.last_name
+ORDER BY
+    total_bookings DESC;
+```
+
+### 💡 Insight
+
+* `LEFT JOIN` ensures even users with 0 bookings are included.
+* Useful for analytics, leaderboard views, or understanding user activity.
+
+---
+
+## 🪜 2. Window Function – Rank Properties by Booking Count
+
+### ✅ Query Logic
+
+We use `RANK()` as a window function to assign a ranking to each property based on how many bookings it has received.
+
+### 🧩 SQL Summary
+
+```sql
+SELECT
+    p.property_id,
+    p.name,
+    COUNT(b.booking_id) AS total_bookings,
+    RANK() OVER (ORDER BY COUNT(b.booking_id) DESC) AS booking_rank
+FROM
+    properties p
+LEFT JOIN
+    bookings b ON p.property_id = b.property_id
+GROUP BY
+    p.property_id, p.name
+ORDER BY
+    booking_rank;
+```
+
+### 💡 Insight
+
+* `RANK()` provides meaningful ordering even when booking totals are tied.
+* Supports admin dashboards or top-performer analytics.
+
+---
+
+## 📌 Summary
+
+* Aggregation functions like `COUNT()` give us grouped insights over records.
+* Window functions like `RANK()` help compare rows within a result set without collapsing them.
+
+These SQL techniques are essential for reporting, recommendations, and ranking features in scalable backend systems like Airbnb.
+
 
 
