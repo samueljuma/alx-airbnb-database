@@ -6,6 +6,22 @@
 -- Index on user_id for quick lookups and joins
 CREATE INDEX idx_users_user_id ON users(user_id);
 
+--Sample Checks before and after index creation
+--##################################################################################
+-- Index on email for quick lookup during login/authentication
+-- Before
+EXPLAIN ANALYZE 
+SELECT * FROM bookings WHERE user_id = '2505c81e-f1b6-45f1-93b7-ab346690253a';
+
+-- create Index
+CREATE INDEX idx_bookings_user_id ON bookings(user_id);
+
+-- After
+EXPLAIN ANALYZE 
+SELECT * FROM bookings WHERE user_id = '2505c81e-f1b6-45f1-93b7-ab346690253a';
+--##################################################################################
+
+
 -- Index on email for quick lookup during login/authentication
 CREATE INDEX idx_users_email ON users(email);
 
